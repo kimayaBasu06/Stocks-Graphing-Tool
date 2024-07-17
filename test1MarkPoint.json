@@ -1,15 +1,14 @@
 [
-	{
-		"label": "buy", // either buy or sell
-		"x": "2022-09-01T05:00:00Z", // x-coordinate for markpoint 
-		"y": 20292, // y-coordinate for markpoint
-		"prof":  "-123", // gain or loss from buy/sell; negative sign at the begining indicates loss
-	}
-
-	{
-		"label": "sell", // either buy or sell
-		"x": "2022-10-02T05:00:00Z", // x-coordinate for markpoint 
-		"y": 19500, // y-coordinate for markpoint
-		"prof":  "123", // gain or loss from buy/sell; negative sign at the begining indicates loss
-	}
+    {
+        "label": "buy", 
+        "x": "2022-09-01T05:00:00Z", 
+        "y": 20292, 
+        "prof": "-123"
+    },
+    {
+        "label": "sell", 
+        "x": "2022-10-02T05:00:00Z", 
+        "y": 19500, 
+        "prof": "123"
+    }
 ]

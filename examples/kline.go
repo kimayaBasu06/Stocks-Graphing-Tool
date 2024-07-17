@@ -188,50 +188,21 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
 		}),
 	)
 
-	// type ReadMarkPointData struct {
-	//     Name string `json:"name"`
-	// }
-
-	// var data []byte
-	// data, _ = ioutil.ReadFile("foo.json")
-
-	// var str ReadMarkPointData
-	// _ = json.Unmarshal(data, &str)
-
-	// if str.Name == "apple" {
-	//     // Do Stuff
-	// }
-
 	type ReadMarkPointData struct {
         MarkLabel string `json:"label"`
         XCoordinate  string    `json:"x"`
         YCoordinate int `json:"y"`
         Profit string `json:"prof"`
     }
-
- // 	var importData []byte
-	// importData, _ = ioutil.ReadFile("test1MarkPoint.json")
-
-	// var markPointValues ReadMarkPointData
-	// _ = json.Unmarshal(importData, &markPointValues)
-
-	filePath := "test1MarkPoint.json"
-
     // Open and read the file
-    file, err := os.Open(filePath)
-    if err != nil {
-        log.Fatalf("Error opening JSON file: %v", err)
-    }
-    defer file.Close()
 
-	//jsonFile, err := ioutil.ReadFile("test1MarkPoint.json")
-	jsonFile, err := ioutil.ReadAll(file)
+	jsonFile, err := ioutil.ReadFile("test1MarkPoint.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
         // return nil, err
     }
 
-    var markPointValues ReadMarkPointData
+    var markPointValues []ReadMarkPointData
     err = json.Unmarshal(jsonFile, &markPointValues)
     if err != nil {
         fmt.Println("Error parsing JSON:", err)
@@ -240,44 +211,37 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
 
     fmt.Println("Reading from JSON FILE: ", markPointValues)
 
-	customPointX := "2022-09-01T05:00:00Z"
-	customPointY := 20292
-	customPointX2 := "2022-10-02T05:00:00Z"
-	customPointY2 := 19500
 
-	kline.SetXAxis(x).AddSeries("kline", y).
-		SetSeriesOptions(
+	// customPointX2 := "2022-10-02T05:00:00Z"
+	// customPointY2 := 19500
+	markPointColor := "blue"
+
+	kline.SetXAxis(x).AddSeries("kline", y)
+	for i := 0; i < len(markPointValues); i++ {
+		if markPointValues[i].MarkLabel == "buy" {
+			markPointColor = "blue"
+		}
+		if markPointValues[i].MarkLabel == "sell" {
+			markPointColor = "purple"
+		}
+		kline.SetSeriesOptions(
 			// charts.WithMarkPointNameTypeItemOpts(opts.MarkPointNameTypeItem{
 			// 	Name:     "low",
 			// 	Type:     "min",
 			// 	ValueDim: "lowest",
 			// }),
-			charts.WithMarkPointNameCoordItemOpts(opts.MarkPointNameCoordItem{
-				Name:       "buy", // lable when hovering over markpoint
-				Coordinate: []interface{}{customPointX, customPointY}, // coordinates of mark; string, int
-				Value: customPointX, // value displayed on top of markpoint
-				Label: &opts.Label{
-					Show:     opts.Bool(true),
-					Color:    "#0052cc",
-					Position: "inside",
-				},
-				ItemStyle: &opts.ItemStyle{
-		            Color:  "blue", // Customize color
-		            Opacity: 1,   // Adjust opacity if necessary
-		        },
-				Symbol: "pin",
-	 		}),
 
-	 		charts.WithMarkPointNameCoordItemOpts(opts.MarkPointNameCoordItem{
-				Name:       "sell",
-				Coordinate: []interface{}{customPointX2, customPointY2},
+			charts.WithMarkPointNameCoordItemOpts(opts.MarkPointNameCoordItem{
+				Name: markPointValues[i].MarkLabel, // lable when hovering over markpoint
+				Coordinate: []interface{}{markPointValues[i].XCoordinate, markPointValues[i].YCoordinate}, // coordinates of mark; string, int
+				Value: markPointValues[i].Profit, // value displayed on top of markpoint
 				Label: &opts.Label{
 					Show:     opts.Bool(true),
-					Color:    "#0052cc",
+					Color:    "orange",
 					Position: "inside",
 				},
 				ItemStyle: &opts.ItemStyle{
-		            Color:  "orange", // Customize color
+		            Color:  markPointColor, // Customize color
 		            Opacity: 1,   // Adjust opacity if necessary
 		        },
 				Symbol: "pin",
@@ -295,6 +259,7 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
 				BorderColor0: "#008F28",
 			}),
 		)
+	}
 	return kline
 }
 
