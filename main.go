@@ -14,47 +14,51 @@ func logRequest(handler http.Handler) http.Handler {
 		handler.ServeHTTP(w, r)
 	})
 }
+// var data[];
+// data[]=getData()
 
 func main() {
-	examplers := []examples.Exampler{
-		examples.BarExamples{},
-		examples.Bar3dExamples{},
-		examples.BoxplotExamples{},
-		examples.EffectscatterExamples{},
-		examples.FunnelExamples{},
-		examples.FunnelExamples{},
-		examples.GaugeExamples{},
-		examples.GeoExamples{},
-		examples.GraphExamples{},
-		examples.HeatmapExamples{},
-		examples.KlineExamples{},
-		examples.LineExamples{},
-		examples.Line3dExamples{},
-		examples.LiquidExamples{},
-		examples.MapExamples{},
-		examples.PageCenterLayoutExamples{},
-		examples.PageFlexLayoutExamples{},
-		examples.PageNoneLayoutExamples{},
-		examples.ParallelExamples{},
-		examples.PieExamples{},
-		examples.RadarExamples{},
-		//examples.CustomizeExamples{},
-		examples.SankeyExamples{},
-		examples.ScatterExamples{},
-		examples.Scatter3dExamples{},
-		examples.SunburstExample{},
-		examples.Surface3dExamples{},
-		examples.TreeExamples{},
-		examples.TreeMapExamples{},
-		examples.ThemeriverExamples{},
-		examples.ThemeExamples{},
-		examples.WordcloudExamples{},
-		examples.SunburstExample{},
-	}
+	// examplers := []examples.Exampler{
+	// 	// examples.BarExamples{},
+	// 	// examples.Bar3dExamples{},
+	// 	// examples.BoxplotExamples{},
+	// 	// examples.EffectscatterExamples{},
+	// 	// examples.FunnelExamples{},
+	// 	// examples.FunnelExamples{},
+	// 	// examples.GaugeExamples{},
+	// 	// examples.GeoExamples{},
+	// 	// examples.GraphExamples{},
+	// 	// examples.HeatmapExamples{},
+	// 	examples.KlineExamples{}, // test this one
+	// 	// examples.LineExamples{},
+	// 	// examples.Line3dExamples{},
+	// 	// examples.LiquidExamples{},
+	// 	// examples.MapExamples{},
+	// 	// examples.PageCenterLayoutExamples{},
+	// 	// examples.PageFlexLayoutExamples{},
+	// 	// examples.PageNoneLayoutExamples{},
+	// 	// examples.ParallelExamples{},
+	// 	// examples.PieExamples{},
+	// 	// examples.RadarExamples{},
+	// 	// //examples.CustomizeExamples{},
+	// 	// examples.SankeyExamples{},
+	// 	// examples.ScatterExamples{},
+	// 	// examples.Scatter3dExamples{},
+	// 	// examples.SunburstExample{},
+	// 	// examples.Surface3dExamples{},
+	// 	// examples.TreeExamples{},
+	// 	// examples.TreeMapExamples{},
+	// 	// examples.ThemeriverExamples{},
+	// 	// examples.ThemeExamples{},
+	// 	// examples.WordcloudExamples{},
+	// 	// examples.SunburstExample{},
+	// }
 
-	for _, e := range examplers {
-		e.Examples()
-	}
+	// for _, e := range examplers {
+	// 	e.Examples()
+	// }
+
+	examples.KlineExamples{}.Examples()
 
 	serverPages := "true"
 	if len(os.Args) > 1 {
@@ -66,6 +70,6 @@ func main() {
 		return
 	}
 	fs := http.FileServer(http.Dir("examples/html"))
-	log.Println("running server at http://localhost:8089")
-	log.Fatal(http.ListenAndServe("localhost:8089", logRequest(fs)))
+	log.Println("running server at http://localhost:8090")
+	log.Fatal(http.ListenAndServe("localhost:8090", logRequest(fs)))
 }

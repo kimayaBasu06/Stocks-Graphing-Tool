@@ -10,22 +10,22 @@ import (
 func genPages() *components.Page {
 	page := components.NewPage()
 	page.AddCharts(
-		lineBase(),
-		pieRadius(),
-		barXYName(),
-		barColor(),
-		klineDataZoomInside(),
-		parallelComponent(),
-		barGap(),
-		radarBase(),
-		bar3DAutoRotate(),
-		gaugeBase(),
-		heatMapBase(),
-		barMarkPoints(),
-		scatterShowLabel(),
-		liquidDiamond(),
-		barOverlap(),
-		mapShowLabel(),
+		// lineBase(),
+		// pieRadius(),
+		// barXYName(),
+		// barColor(),
+		// klineDataZoomInside(),
+		// parallelComponent(),
+		// barGap(),
+		// radarBase(),
+		// bar3DAutoRotate(),
+		// gaugeBase(),
+		// heatMapBase(),
+		// barMarkPoints(),
+		// scatterShowLabel(),
+		// liquidDiamond(),
+		// barOverlap(),
+		// mapShowLabel(),
 	)
 	return page
 }
