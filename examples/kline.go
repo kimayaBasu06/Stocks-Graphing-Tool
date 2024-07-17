@@ -298,9 +298,9 @@ func createArray() ([]string, [][]float32) {
 	// importing data from alapaca api
 	client := marketdata.NewClient(marketdata.ClientOpts{})
 	request := marketdata.GetCryptoBarsRequest{
-	  TimeFrame: marketdata.OneDay, // change data frequency by changing this to OneDay, OneMinute, etc
+	  TimeFrame: marketdata.OneMin, // change data frequency by changing this to OneDay, OneMinute, etc
 	  Start:     time.Date(2022, 9, 1, 0, 0, 0, 0, time.UTC),
-	  End:       time.Date(2022, 9, 40, 0, 0, 0, 0, time.UTC),
+	  End:       time.Date(2022, 9, 35, 0, 0, 0, 0, time.UTC),
 	}
 
 	bars, err := client.GetCryptoBars("BTC/USD", request)
