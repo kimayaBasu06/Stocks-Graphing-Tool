@@ -212,18 +212,29 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
     fmt.Println("Reading from JSON FILE: ", markPointValues)
 
 
-	// customPointX2 := "2022-10-02T05:00:00Z"
-	// customPointY2 := 19500
+	// profit colors: green
+	// loss colors: red
+	// buy: triangle
+	// sell: circle
+ 
 	markPointColor := "blue"
+	markPointSymbol := "triangle"
 
 	kline.SetXAxis(x).AddSeries("kline", y)
 	for i := 0; i < len(markPointValues); i++ {
 		if markPointValues[i].MarkLabel == "buy" {
-			markPointColor = "blue"
+			markPointSymbol = "triangle"
 		}
 		if markPointValues[i].MarkLabel == "sell" {
-			markPointColor = "purple"
+			markPointSymbol = "circle"
 		}
+		if len(markPointValues[i].Profit) > 0 && markPointValues[i].Profit[0] == byte('-') {
+	        markPointColor = "red"
+	    }
+	    if len(markPointValues[i].Profit) > 0 && markPointValues[i].Profit[0] != byte('-') {
+	        markPointColor = "green"
+	    }
+
 		kline.SetSeriesOptions(
 			// charts.WithMarkPointNameTypeItemOpts(opts.MarkPointNameTypeItem{
 			// 	Name:     "low",
@@ -236,7 +247,7 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
 				Coordinate: []interface{}{markPointValues[i].XCoordinate, markPointValues[i].YCoordinate}, // coordinates of mark; string, int
 				Value: markPointValues[i].Profit, // value displayed on top of markpoint
 				Label: &opts.Label{
-					Show:     opts.Bool(true),
+					Show:     opts.Bool(false),
 					Color:    "orange",
 					Position: "inside",
 				},
@@ -244,7 +255,8 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
 		            Color:  markPointColor, // Customize color
 		            Opacity: 1,   // Adjust opacity if necessary
 		        },
-				Symbol: "pin",
+				Symbol: markPointSymbol,
+				SymbolSize: 10,
 	 		}),
 			
 			charts.WithMarkPointStyleOpts(opts.MarkPointStyle{
@@ -291,7 +303,6 @@ func (KlineExamples) Examples() {
 	}
 	page.Render(io.MultiWriter(f))
 }
-
 
 // generates data from alpaca api and organizes it into separate arrays for graphing. 
 func createArray() ([]string, [][]float32) {
