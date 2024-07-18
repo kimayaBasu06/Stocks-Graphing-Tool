@@ -190,9 +190,9 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
 
 	type ReadMarkPointData struct {
         MarkLabel string `json:"label"`
-        XCoordinate  string    `json:"x"`
-        YCoordinate int `json:"y"`
-        Profit string `json:"prof"`
+        XCoordinate  string    `json:"time"`
+        YCoordinate int `json:"price"`
+        Profit string `json:"gain"`
     }
     // Open and read the file
 
