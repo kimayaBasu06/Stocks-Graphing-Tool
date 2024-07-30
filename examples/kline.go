@@ -2,9 +2,9 @@ package examples
 
 import (
 	"io/ioutil"
-	// "io"
+	"io"
 	"os"
-	"net/http"
+	// "net/http"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
@@ -14,12 +14,43 @@ import (
 	"fmt"
 	"encoding/json"
 	"C"
-	"log"
+	// "log"
 
 )
 
 // data structure is date, open, close, low, high
 // dates are read as string, so data must be ordered sequentially by date
+
+func lineStyle(arrayTime []string, arrayRSI []float32) *charts.Line {
+	line := charts.NewLine()
+	line.SetGlobalOptions(
+		charts.WithTitleOpts(opts.Title{
+			Title: "basic line example", Subtitle: "This is the subtitle.",
+		}),
+		charts.WithXAxisOpts(opts.XAxis{
+			SplitNumber: 20,
+		}),
+		charts.WithYAxisOpts(opts.YAxis{
+			Scale: opts.Bool(true),
+		}),
+		charts.WithDataZoomOpts(opts.DataZoom{
+			Start:      50,
+			End:        100,
+			XAxisIndex: []int{0},
+		}),
+	)
+
+	lengthArray := len(arrayRSI)
+	items := make([]opts.LineData, 0)
+	for i := 0; i < lengthArray; i++ {
+		items = append(items, opts.LineData{Value: arrayRSI[i]})
+	}
+
+	line.SetXAxis(arrayTime).
+		AddSeries("Category A", items)
+	return line
+}
+
 
 func klineBase(arrayTime []string, arrayData [][]float32) *charts.Kline {
 	kline := charts.NewKLine()
@@ -170,58 +201,57 @@ type ReadGraphingData2 struct {
     Close  float32    `json:"close"`
 }
 
-//no more export from JSON
-func fromJSON(documentPtr *C.char) *C.char {
-    documentString := C.GoString(documentPtr)
-    var jsonDocument map[string]interface{}
-    err := json.Unmarshal([]byte(documentString), &jsonDocument)
-    if err != nil {
-        log.Println("Error parsing JSON:", err)
-        return C.CString("Error parsing JSON")
-    }
-    filePath := "test2GraphingData.json"
-    if _, err := os.Stat(filePath); os.IsNotExist(err) {
-        initialContent := []byte("[]")
-        if err := ioutil.WriteFile(filePath, initialContent, 0644); err != nil {
-            log.Fatalf("Error creating JSON file: %v", err)
-        }
-        fmt.Println("File created:", filePath)
-    }
-    file, err := ioutil.ReadFile(filePath)
-    if err != nil {
-        log.Fatalf("Error reading JSON file: %v", err)
-    }
-    // Unmarshal the JSON data into a slice of Person structs
-    var graphingValues []ReadGraphingData2
-    if err := json.Unmarshal(file, &graphingValues); err != nil {
-        log.Fatalf("Error parsing JSON: %v", err)
-    }
-    newDataBytes, err := json.Marshal(jsonDocument)
-    if err != nil {
-        log.Fatalf("Error marshaling new data: %v", err)
-    }
+// func fromJSON(documentPtr *C.char) *C.char {
+//     documentString := C.GoString(documentPtr)
+//     var jsonDocument map[string]interface{}
+//     err := json.Unmarshal([]byte(documentString), &jsonDocument)
+//     if err != nil {
+//         log.Println("Error parsing JSON:", err)
+//         return C.CString("Error parsing JSON")
+//     }
+//     filePath := "test2GraphingData.json"
+//     if _, err := os.Stat(filePath); os.IsNotExist(err) {
+//         initialContent := []byte("[]")
+//         if err := ioutil.WriteFile(filePath, initialContent, 0644); err != nil {
+//             log.Fatalf("Error creating JSON file: %v", err)
+//         }
+//         // fmt.Println("File created:", filePath)
+//     }
+//     file, err := ioutil.ReadFile(filePath)
+//     if err != nil {
+//         log.Fatalf("Error reading JSON file: %v", err)
+//     }
+//     // Unmarshal the JSON data into a slice of Person structs
+//     var graphingValues []ReadGraphingData2
+//     if err := json.Unmarshal(file, &graphingValues); err != nil {
+//         log.Fatalf("Error parsing JSON: %v", err)
+//     }
+//     newDataBytes, err := json.Marshal(jsonDocument)
+//     if err != nil {
+//         log.Fatalf("Error marshaling new data: %v", err)
+//     }
 
-    var newGraphingData ReadGraphingData2
-    if err := json.Unmarshal(newDataBytes, &newGraphingData); err != nil {
-        log.Fatalf("Error unmarshaling new data: %v", err)
-    }
-    // Append the new data to the slice
-    graphingValues = append(graphingValues, newGraphingData)
-    // Marshal the updated slice back to JSON
-    updatedJSON, err := json.MarshalIndent(graphingValues, "", "    ")
-    if err != nil {
-        log.Fatalf("Error marshaling JSON: %v", err)
-    }
-    // Write the updated JSON back to the file
-    if err := ioutil.WriteFile(filePath, updatedJSON, 0644); err != nil {
-        log.Fatalf("Error writing JSON to file: %v", err)
-    }
+//     var newGraphingData ReadGraphingData2
+//     if err := json.Unmarshal(newDataBytes, &newGraphingData); err != nil {
+//         log.Fatalf("Error unmarshaling new data: %v", err)
+//     }
+//     // Append the new data to the slice
+//     graphingValues = append(graphingValues, newGraphingData)
+//     // Marshal the updated slice back to JSON
+//     updatedJSON, err := json.MarshalIndent(graphingValues, "", "    ")
+//     if err != nil {
+//         log.Fatalf("Error marshaling JSON: %v", err)
+//     }
+//     // Write the updated JSON back to the file
+//     if err := ioutil.WriteFile(filePath, updatedJSON, 0644); err != nil {
+//         log.Fatalf("Error writing JSON to file: %v", err)
+//     }
 
-    fmt.Println("Successfully added new data to JSON file.")
+//     fmt.Println("Successfully added new data to JSON file.")
 
 
-    return C.CString("Going back  to python")
-}
+//     return C.CString("Going back  to python")
+// }
 
 // 
 func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
@@ -259,7 +289,7 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
     }
     // Open and read the file
 
-	jsonFile, err := ioutil.ReadFile("TestingTradingData.json")
+	jsonFile, err := ioutil.ReadFile("./../Trading-main/TestingTradingData.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
         // return nil, err
@@ -270,10 +300,6 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
         fmt.Println("Error parsing JSON:", err)
         // return nil, err
     }
-    fmt.Println("Reading from JSON FILE, getting markPointValues MarkLabel: ", markPointValues[0].MarkLabel)
-    fmt.Println("Reading from JSON FILE, getting markPointValues  XCoordinate: ", markPointValues[0].XCoordinate)
-    fmt.Println("Reading from JSON FILE, getting markPointValues YCoordinate: ", markPointValues[0].YCoordinate)
-    fmt.Println("Reading from JSON FILE, getting markPointValues Profit: ", markPointValues[0].Profit)
     
 	// profit colors: green
 	// loss colors: red
@@ -288,12 +314,12 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
 		if markPointValues[i].MarkLabel == "buy" {
 			markPointSymbol = "triangle"
 			markPointColor = "black"
-			fmt.Println("CHECKING BUY MARKER")
+			// fmt.Println("CHECKING BUY MARKER")
 			// fmt.Println("Reading from JSON FILE, getting profit: ", markPointValues[i].Profit)
 		}
 		if markPointValues[i].MarkLabel == "sell" {
 			markPointSymbol = "circle"
-			fmt.Println("CHECKING SELL MARKER")
+			// fmt.Println("CHECKING SELL MARKER")
 			if len(markPointValues[i].Profit) > 0 && markPointValues[i].Profit[0] == byte('-') {
 	        markPointColor = "red"
 		    }
@@ -348,33 +374,76 @@ type KlineExamples struct{}
 func (KlineExamples) Examples() {
 
 	// assigns the data from createArray to separate arrays
-	// var dataPoints [][]float32
-	// var dataTime []string
-	// dataTime, dataPoints = createArray()
+	var dataPoints [][]float32
+	var dataTime []string
+	dataTime, dataPoints = createArray()
+
+	var dataRSI []float32
+	dataRSI = getRSI()
 	// fmt.Println("Array from data package:", dataTime)
 	// fmt.Println("Array from data package:", dataPoints)
 
-	// page := components.NewPage()
-	// page.AddCharts(
-	// 	klineBase(dataTime, dataPoints),
-	// 	// klineDataZoomInside(),
-	// 	// klineDataZoomBoth(),
-	// 	// klineDataZoomYAxis(),
-	// 	// klineStyle(dataTime, dataPoints),
-	// )
+	page := components.NewPage()
+	page.AddCharts(
+		// klineBase(dataTime, dataPoints),
+		// klineDataZoomInside(),
+		// klineDataZoomBoth(),
+		// klineDataZoomYAxis(),
+		
+		klineStyle(dataTime, dataPoints),
+		lineStyle(dataTime, dataRSI),
+	)
 
 
-	// f, err := os.Create("examples/html/kline.html")
-	// if err != nil {
-	// 	panic(err)
+	f, err := os.Create("examples/html/kline.html")
+	if err != nil {
+		panic(err)
 
-	// }
-	// page.Render(io.MultiWriter(f))
+	}
+	page.Render(io.MultiWriter(f))
+}
+
+func getRSI() ([]float32) {
+	type ReadRSIData struct {
+        RSI float32 `json:"rsi"`
+    }
+    // Open and read the file
+
+	// jsonGraphingFile, err := ioutil.ReadFile("test1GraphingData.json")
+	jsonRSIFile, err := ioutil.ReadFile("./../Trading-main/RecordingRSI.json")
+    if err != nil {
+        fmt.Println("Error reading JSON file:", err)
+        // return nil, err
+    }
+
+    // fmt.Println("Getting data values from 'jsonGraphingFile':", jsonGraphingFile)
+    var rsiValues []ReadRSIData
+    err = json.Unmarshal(jsonRSIFile, &rsiValues)
+    if err != nil {
+        fmt.Println("Error parsing JSON:", err)
+        // return nil, err
+    }
+    
+
+	fmt.Println("TESTING RSI DATA, getting time json: ", rsiValues[0].RSI)
+
+	lenRSI := len(rsiValues)
+	fmt.Println("LENGTH OF RSI VALUES: ", lenRSI)
+
+	rsiData := make([]float32, lenRSI)
+    for i := 0; i < lenRSI; i++ {
+    	rsiData[i] = rsiValues[i].RSI
+    }
+
+    fmt.Println("TESTING RSI DATA, getting time array: ", rsiData[0])
+
+    return rsiData
+
 }
 
 // generates data and organizes it into separate arrays for graphing. 
 // no more export createArray
-func createArray() *components.Page {
+func createArray() ([]string, [][]float32) {
 	
 	type ReadGraphingData struct {
         TimeStamp string `json:"time"`
@@ -386,7 +455,7 @@ func createArray() *components.Page {
     // Open and read the file
 
 	// jsonGraphingFile, err := ioutil.ReadFile("test1GraphingData.json")
-	jsonGraphingFile, err := ioutil.ReadFile("TestingGraphingData.json")
+	jsonGraphingFile, err := ioutil.ReadFile("./../Trading-main/TestingGraphingData.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
         // return nil, err
@@ -402,31 +471,7 @@ func createArray() *components.Page {
     
 
 	fmt.Println("TESTING GRAPHING DATA, getting time: ", graphingValues[0].TimeStamp)
-	// // extracts data from 'bars' and assigns it to the json 'rawData'
- //    rawData, err := json.MarshalIndent(bars, "", "   ")
- //    if err != nil {
- //    	log.Fatalf("marshaling error: %s", err)
- //    }
 
- //    // keys for the 'rawData' json file
- //    type DataStruct struct {
- //        TimeStamp string `json:"t"`
- //        Open  float32    `json:"o"`
- //        High float32 `json:"h"`
- //        Low float32 `json:"l"`
- //        Close  float32    `json:"c"`
- //        Volume float32 `json:"v"`
- //        TradeCount  float32    `json:"n"`
- //        VWAP float32 `json:"vw"`
- //    }
-
- //    // unmarshals the json into the data structure to be organized
- //    var dataSet []DataStruct
- //    err = json.Unmarshal([]byte(rawData), &dataSet)
- //    if err != nil {
- //        fmt.Println("error:", err)
- //        // return
- //    }
 
     // creates an array slice of undefined length to hold the data
     numRows := len(graphingValues)
@@ -457,28 +502,19 @@ func createArray() *components.Page {
     for i := 0; i < numRows; i++ {
     	dataTime[i] = graphingValues[i].TimeStamp
     }
-
-
-    page := components.NewPage()
-	page.AddCharts(
-		klineStyle(dataTime, dataPoints),
-	)
-
-	return page
     
 
-    // return dataTime, dataPoints  
+    return dataTime, dataPoints  
 }
 
-func renderPage(w http.ResponseWriter, _ *http.Request) {
-    page := createArray()
-    page.Render(w)
-}
+// func renderPage(w http.ResponseWriter, _ *http.Request) {
+//     page := createArray()
+//     page.Render(w)
+// }
 
-//export generateLocal
-func generateLocal() {
-    http.HandleFunc("/", renderPage)
-    http.ListenAndServe(":8080", nil)
-    fmt.Println("RUNning at server from go")
-}
+// func generateLocal() {
+//     http.HandleFunc("/", renderPage)
+//     http.ListenAndServe(":8080", nil)
+//     fmt.Println("RUNning at server from go")
+// }
 
