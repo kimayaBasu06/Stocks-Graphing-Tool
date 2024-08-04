@@ -2,9 +2,9 @@ package examples
 
 import (
 	"io/ioutil"
-	"io"
-	"os"
-	// "net/http"
+	// "io"
+	// "os"
+	"net/http"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
@@ -25,7 +25,7 @@ func lineStyle(arrayTime []string, arrayRSI []float32) *charts.Line {
 	line := charts.NewLine()
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
-			Title: "basic line example", Subtitle: "This is the subtitle.",
+			Title: "LineGraph", Subtitle: "This is the subtitle.",
 		}),
 		charts.WithXAxisOpts(opts.XAxis{
 			SplitNumber: 20,
@@ -33,11 +33,11 @@ func lineStyle(arrayTime []string, arrayRSI []float32) *charts.Line {
 		charts.WithYAxisOpts(opts.YAxis{
 			Scale: opts.Bool(true),
 		}),
-		charts.WithDataZoomOpts(opts.DataZoom{
-			Start:      50,
-			End:        100,
-			XAxisIndex: []int{0},
-		}),
+		// charts.WithDataZoomOpts(opts.DataZoom{
+		// 	Start:      50,
+		// 	End:        100,
+		// 	XAxisIndex: []int{0},
+		// }),
 	)
 
 	lengthArray := len(arrayRSI)
@@ -193,13 +193,13 @@ func klineBase(arrayTime []string, arrayData [][]float32) *charts.Kline {
 	// sell markers should display : "S +gain" OR "S-loss" 
 // ask sean for api (for the imported data) 
 // change datasets to imported values rather than set numbers
-type ReadGraphingData2 struct {
-    TimeStamp string `json:"time"`
-    Open  float32    `json:"open"`
-    High float32 `json:"high"`
-    Low float32 `json:"low"`
-    Close  float32    `json:"close"`
-}
+// type ReadGraphingData2 struct {
+//     TimeStamp string `json:"time"`
+//     Open  float32    `json:"open"`
+//     High float32 `json:"high"`
+//     Low float32 `json:"low"`
+//     Close  float32    `json:"close"`
+// }
 
 // func fromJSON(documentPtr *C.char) *C.char {
 //     documentString := C.GoString(documentPtr)
@@ -266,7 +266,7 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
 
 	kline.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
-			Title: "different style",
+			Title: "KlineGraph",
 		}),
 		charts.WithXAxisOpts(opts.XAxis{
 			SplitNumber: 20,
@@ -274,11 +274,11 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
 		charts.WithYAxisOpts(opts.YAxis{
 			Scale: opts.Bool(true),
 		}),
-		charts.WithDataZoomOpts(opts.DataZoom{
-			Start:      50,
-			End:        100,
-			XAxisIndex: []int{0},
-		}),
+		// charts.WithDataZoomOpts(opts.DataZoom{
+		// 	Start:      50,
+		// 	End:        100,
+		// 	XAxisIndex: []int{0},
+		// }),
 	)
 
 	type ReadMarkPointData struct {
@@ -369,9 +369,10 @@ func klineStyle(arrayTime []string, arrayData [][]float32) *charts.Kline {
 	
 }
 
+
 type KlineExamples struct{}
 
-func (KlineExamples) Examples() {
+func (KlineExamples) Examples(w http.ResponseWriter) {
 
 	// assigns the data from createArray to separate arrays
 	var dataPoints [][]float32
@@ -383,24 +384,74 @@ func (KlineExamples) Examples() {
 	// fmt.Println("Array from data package:", dataTime)
 	// fmt.Println("Array from data package:", dataPoints)
 
-	page := components.NewPage()
-	page.AddCharts(
-		// klineBase(dataTime, dataPoints),
-		// klineDataZoomInside(),
-		// klineDataZoomBoth(),
-		// klineDataZoomYAxis(),
+	kline1 := klineStyle(dataTime, dataPoints)
+    line2 := lineStyle(dataTime, dataRSI)
+
+    // Synchronize data zoom options
+    syncDataZoom := opts.DataZoom{
+        Type:       "slider",
+        Start:      50,
+        End:        100,
+        XAxisIndex: []int{0, 1}, // Synchronize both charts
+    }
+
+    kline1.SetGlobalOptions(
+    	charts.WithTitleOpts(opts.Title{Title: "KlineGraph"}),
+        charts.WithDataZoomOpts(syncDataZoom),
+    )
+
+    line2.SetGlobalOptions(
+    	charts.WithTitleOpts(opts.Title{Title: "LineGraph"}),
+        charts.WithDataZoomOpts(syncDataZoom),
+    )
+    fmt.Println("Rendering Charts Now")
+
+    // Render the charts
+    page := components.NewPage()
+    page.AddCharts(kline1, line2)
+	// page := components.NewPage()
+	// page.AddCharts(
+	// 	// klineBase(dataTime, dataPoints),
+	// 	// klineDataZoomInside(),
+	// 	// klineDataZoomBoth(),
+	// 	// klineDataZoomYAxis(),
 		
-		klineStyle(dataTime, dataPoints),
-		lineStyle(dataTime, dataRSI),
-	)
+	// 	klineStyle(dataTime, dataPoints),
+	// 	lineStyle(dataTime, dataRSI),
+	// )
 
 
-	f, err := os.Create("examples/html/kline.html")
-	if err != nil {
-		panic(err)
+	// f, err := os.Create("examples/html/kline.html")
+	// if err != nil {
+	// 	panic(err)
 
-	}
-	page.Render(io.MultiWriter(f))
+	// }
+	// page.Render(io.MultiWriter(f))
+	page.Render(w)
+
+    // Include JavaScript for synchronization
+    js := `
+        <script type="text/javascript">
+            setTimeout(function() {
+                var chart1 = echarts.getInstanceByDom(document.getElementById('chart_0'));
+                var chart2 = echarts.getInstanceByDom(document.getElementById('chart_1'));
+
+                function syncCharts(sourceChart, targetChart) {
+                    sourceChart.on('dataZoom', function(params) {
+                        targetChart.dispatchAction({
+                            type: 'dataZoom',
+                            start: params.start,
+                            end: params.end,
+                        });
+                    });
+                }
+
+                syncCharts(chart1, chart2);
+                syncCharts(chart2, chart1);
+            }, 1000); // Delay to ensure charts are fully initialized
+        </script>
+    `
+    w.Write([]byte(js))
 }
 
 func getRSI() ([]float32) {

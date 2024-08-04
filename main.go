@@ -8,20 +8,16 @@ import (
 	"github.com/go-echarts/examples/examples"
 )
 
-// export logRequest
 func logRequest(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%s %s %s\n", r.RemoteAddr, r.Method, r.URL)
 		handler.ServeHTTP(w, r)
 	})
 }
-// var data[];
-// data[]=getData()
-
 
 func main() {
 
-	examples.KlineExamples{}.Examples()
+	examples.LineExamples{}.Examples()
 	fmt.Println("In the Main Function")
 
 	serverPages := "true"
@@ -37,3 +33,19 @@ func main() {
 	log.Println("running server at http://localhost:8090")
 	log.Fatal(http.ListenAndServe("localhost:8090", logRequest(fs)))
 }
+
+// generates only one type of graph - ex kline graph
+// func main() {
+//     log.Println("Starting server at http://localhost:8090")
+//     fmt.Println("Starting server at http://localhost:8090")
+//     http.HandleFunc("/", httpServer)
+//     err := http.ListenAndServe(":8090", nil)
+//     if err != nil {
+//         log.Fatalf("Server failed to start: %v", err)
+//     }
+// }
+
+// func httpServer(w http.ResponseWriter, r *http.Request) {
+//     log.Println("Received request")
+//     examples.KlineExamples{}.Examples(w)
+// }
