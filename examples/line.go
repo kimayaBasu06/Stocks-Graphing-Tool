@@ -298,8 +298,8 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		charts.WithYAxisOpts(opts.YAxis{
 			Name:  "RSI",
 			Scale: opts.Bool(true),
-			Min: 5,
-			Max:200,
+			Min: 50,
+			Max:100,
 			SplitLine: &opts.SplitLine{
 				Show: opts.Bool(true),
 				LineStyle: &opts.LineStyle{
