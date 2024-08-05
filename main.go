@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"fmt"
 	"os"
+	"github.com/go-echarts/examples/examples"
 )
 
 func logRequest(handler http.Handler) http.Handler {
@@ -15,6 +16,8 @@ func logRequest(handler http.Handler) http.Handler {
 }
 
 func main() {
+
+	examples.LineExamples{}.Examples()
 	fmt.Println("In the Main Function")
 
 	serverPages := "true"

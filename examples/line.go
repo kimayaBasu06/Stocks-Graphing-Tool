@@ -298,8 +298,8 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		charts.WithYAxisOpts(opts.YAxis{
 			Name:  "RSI",
 			Scale: opts.Bool(true),
-			Min: 50,
-			Max:100,
+			Min: 5,
+			Max: 150,
 			SplitLine: &opts.SplitLine{
 				Show: opts.Bool(true),
 				LineStyle: &opts.LineStyle{
@@ -337,9 +337,9 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		Name:  "Close",
 		// Type:  "value",
 		Show:  opts.Bool(true),
-		Scale: opts.Bool(true),
-		Min: 200,
-		Max: 230,
+		Scale: opts.Bool(true), // only available when min and max are set to specific values 
+		Min: 160,
+		Max: "dataMax",
 		SplitLine: &opts.SplitLine{
 			Show: opts.Bool(true),
 			LineStyle: &opts.LineStyle{
@@ -542,7 +542,7 @@ func (LineExamples) Examples() {
 		// lineShowLabel(),
 		// lineSymbols(),
 		lineChartScaled(dataTime, dataPoints, dataRSI),
-		lineChartUnscaled(dataTime, dataPoints, dataRSI),
+		// lineChartUnscaled(dataTime, dataPoints, dataRSI),
 		// lineSplitLine(),
 		// lineStep(),
 		// lineSmooth(),
