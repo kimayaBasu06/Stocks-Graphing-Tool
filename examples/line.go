@@ -248,6 +248,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 	line := charts.NewLine()
 	type ReadMarkPointData struct {
         MarkLabel string `json:"label"`
+        GraphLabel string `json:"marker"`
         XCoordinate  string    `json:"time"`
         YCoordinate int `json:"price"`
         Profit string `json:"gain"`
@@ -338,7 +339,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		// Type:  "value",
 		Show:  opts.Bool(true),
 		Scale: opts.Bool(true), // only available when min and max are set to specific values 
-		Min: 160,
+		Min: "dataMin",
 		Max: "dataMax",
 		SplitLine: &opts.SplitLine{
 			Show: opts.Bool(true),
@@ -368,7 +369,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		}
 		line.SetSeriesOptions(
 			charts.WithMarkPointNameCoordItemOpts(opts.MarkPointNameCoordItem{
-				Name: markPointValues[i].MarkLabel, // lable when hovering over markpoint
+				Name: markPointValues[i].GraphLabel, // lable when hovering over markpoint
 				Coordinate: []interface{}{markPointValues[i].XCoordinate, markPointValues[i].YCoordinate}, // coordinates of mark; string, int
 				Value: markPointValues[i].Profit, // value displayed on top of markpoint
 				Label: &opts.Label{
