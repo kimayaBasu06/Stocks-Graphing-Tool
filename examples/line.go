@@ -254,7 +254,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
         Profit string `json:"gain"`
     }
 
-	jsonFile, err := ioutil.ReadFile("./../Trading-main/TestingTradingData.json")
+	jsonFile, err := ioutil.ReadFile("./../Trading-1/TestingTradingData.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
         // return nil, err
@@ -285,9 +285,11 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		// AddSeries("Close Data", items)
 		AddSeries("RSI Data", itemsRSI,
 			charts.WithLineChartOpts(opts.LineChart{YAxisIndex: 0}),
+			charts.WithItemStyleOpts(opts.ItemStyle{Color:"#b7c9e2"}),
 		).
 		AddSeries("Close Data", items,
 			charts.WithLineChartOpts(opts.LineChart{YAxisIndex: 1}),
+			charts.WithItemStyleOpts(opts.ItemStyle{Color:"#808080"}),
 		)
 	line.SetGlobalOptions(
 		charts.WithTitleOpts(opts.Title{
@@ -304,29 +306,14 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 			SplitLine: &opts.SplitLine{
 				Show: opts.Bool(true),
 				LineStyle: &opts.LineStyle{
-					Color: "blue",
+					Color: "lightblue",
 					Type:  "dashed",
 				},
 			},
 		}),
-		// charts.WithYAxisOpts(opts.YAxis{
-		// 	Scale: opts.Bool(true),
-		// 	Min: 210,
-		// 	Max:230,
+		// charts.WithItemStyleOpts(opts.ItemStyle{
+		// 	Color: "black",
 		// }),
-		// charts.WithYAxisOpts(opts.YAxis{
-  //           Name: "Series 1 Values",
-  //           Min:  0,
-  //           Max:  100,
-  //       }),
-  //       charts.WithYAxisOpts(opts.YAxis{
-  //           Name:      "Series 2 Values",
-  //           Min:       200,
-  //           Max:       300,
-  //           NameLocation:  "end",
-  //           // AxisLine:  &opts.AxisLine{Show: true},
-  //           // AxisLabel: &opts.AxisLabel{Show: true},
-  //       }),
 		charts.WithDataZoomOpts(opts.DataZoom{
 			Start:      50,
 			End:        100,
@@ -344,7 +331,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		SplitLine: &opts.SplitLine{
 			Show: opts.Bool(true),
 			LineStyle: &opts.LineStyle{
-				Color: "green",
+				Color: "gray",
 				Type:  "dashed",
 			},
 		},
@@ -355,6 +342,12 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		if markPointValues[i].MarkLabel == "buy" {
 			markPointSymbol = "triangle"
 			markPointColor = "black"
+			// fmt.Println("Reading from JSON FILE, getting price: ", markPointValues[i].YCoordinate)
+		}
+		if markPointValues[i].MarkLabel == "newDay" {
+			fmt.Println("reading label newday")
+			markPointSymbol = "diamond"
+			markPointColor = "orange"
 			// fmt.Println("Reading from JSON FILE, getting price: ", markPointValues[i].YCoordinate)
 		}
 		if markPointValues[i].MarkLabel == "sell" {
@@ -446,7 +439,7 @@ func lineChartUnscaled(arrayTime []string, arrayClose []float32, arrayRSI []floa
     }
     // Open and read the file
 
-	jsonFile, err := ioutil.ReadFile("./../Trading-main/TestingTradingData.json")
+	jsonFile, err := ioutil.ReadFile("./../Trading-1/TestingTradingData.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
         // return nil, err
@@ -567,7 +560,7 @@ func getRSIdata() ([]float32) {
     // Open and read the file
 
 	// jsonGraphingFile, err := ioutil.ReadFile("test1GraphingData.json")
-	jsonRSIFile, err := ioutil.ReadFile("./../Trading-main/RecordingRSI.json")
+	jsonRSIFile, err := ioutil.ReadFile("./../Trading-1/RecordingRSI.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
         // return nil, err
@@ -610,7 +603,7 @@ func getTradingdata() ([]string, []float32) {
     // Open and read the file
 
 	// jsonGraphingFile, err := ioutil.ReadFile("test1GraphingData.json")
-	jsonGraphingFile, err := ioutil.ReadFile("./../Trading-main/TestingGraphingData.json")
+	jsonGraphingFile, err := ioutil.ReadFile("./../Trading-1/TestingGraphingData.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
         // return nil, err
