@@ -254,6 +254,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
         Profit string `json:"gain"`
     }
 
+    // add your own file path here
 	jsonFile, err := ioutil.ReadFile("./../Trading-1/TestingTradingData.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
@@ -442,7 +443,7 @@ func lineChartUnscaled(arrayTime []string, arrayClose []float32, arrayRSI []floa
         Profit string `json:"gain"`
     }
     // Open and read the file
-
+    // add your own file path here
 	jsonFile, err := ioutil.ReadFile("./../Trading-1/TestingTradingData.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
@@ -563,7 +564,7 @@ func getRSIdata() ([]float32) {
     }
     // Open and read the file
 
-	// jsonGraphingFile, err := ioutil.ReadFile("test1GraphingData.json")
+	// add your own file path here
 	jsonRSIFile, err := ioutil.ReadFile("./../Trading-1/RecordingRSI.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
@@ -606,7 +607,7 @@ func getTradingdata() ([]string, []float32) {
     }
     // Open and read the file
 
-	// jsonGraphingFile, err := ioutil.ReadFile("test1GraphingData.json")
+	// add your own file path here
 	jsonGraphingFile, err := ioutil.ReadFile("./../Trading-1/TestingGraphingData.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
