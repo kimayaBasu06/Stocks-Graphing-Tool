@@ -6,7 +6,7 @@ This project provides some examples to show how to use go-echarts.
 ### Usage
 
 ```bash
-$ git clone https://github.com/go-echarts/examples.git](https://github.com/kimayaBasu06/Stocks-Graphing-Tool.git
+$ git clone https://github.com/kimayaBasu06/Stocks-Graphing-Tool.git
 $ go run main.go
 ``` 
 
