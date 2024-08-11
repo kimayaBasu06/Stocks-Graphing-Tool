@@ -250,7 +250,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
         MarkLabel string `json:"label"`
         GraphLabel string `json:"marker"`
         XCoordinate  string    `json:"time"`
-        YCoordinate int `json:"price"`
+        YCoordinate float32 `json:"price"`
         Profit string `json:"gain"`
     }
 
@@ -337,20 +337,24 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		},
 		//GridIndex: 1, // y index 1 // not required
 	})
+	gainLoss := markPointValues[0].Profit
 	for i := 0; i < len(markPointValues); i++ {
 		// fmt.Println("Getting the Profit: ", markPointValues[i].Profit)
 		if markPointValues[i].MarkLabel == "buy" {
 			markPointSymbol = "triangle"
 			markPointColor = "black"
+			gainLoss = markPointValues[i].Profit
 			// fmt.Println("Reading from JSON FILE, getting price: ", markPointValues[i].YCoordinate)
 		}
 		if markPointValues[i].MarkLabel == "newDay" {
 			fmt.Println("reading label newday")
 			markPointSymbol = "diamond"
 			markPointColor = "orange"
+			gainLoss = "Gain/Loss: " + markPointValues[i].Profit
 			// fmt.Println("Reading from JSON FILE, getting price: ", markPointValues[i].YCoordinate)
 		}
 		if markPointValues[i].MarkLabel == "sell" {
+			gainLoss = "Gain/Loss: " + markPointValues[i].Profit
 			markPointSymbol = "circle"
 			// fmt.Println("CHECKING SELL MARKER")
 			if len(markPointValues[i].Profit) > 0 && markPointValues[i].Profit[0] == byte('-') {
@@ -364,7 +368,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 			charts.WithMarkPointNameCoordItemOpts(opts.MarkPointNameCoordItem{
 				Name: markPointValues[i].GraphLabel, // lable when hovering over markpoint
 				Coordinate: []interface{}{markPointValues[i].XCoordinate, markPointValues[i].YCoordinate}, // coordinates of mark; string, int
-				Value: markPointValues[i].Profit, // value displayed on top of markpoint
+				Value: gainLoss, // value displayed on top of markpoint
 				Label: &opts.Label{
 					Show:     opts.Bool(false),
 					Color:    "orange",
