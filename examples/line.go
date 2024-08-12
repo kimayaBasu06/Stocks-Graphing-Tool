@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"encoding/json"
+	"strings"
 
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/components"
@@ -339,8 +340,10 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		//GridIndex: 1, // y index 1 // not required
 	})
 	gainLoss := markPointValues[0].Profit
+	shortDate := "T"
 	for i := 0; i < len(markPointValues); i++ {
 		// fmt.Println("Getting the Profit: ", markPointValues[i].Profit)
+		shortDate =  strings.Split(markPointValues[i].XCoordinate, "T")[1][:5]
 		if markPointValues[i].MarkLabel == "buy" {
 			markPointSymbol = "triangle"
 			markPointColor = "black"
@@ -367,7 +370,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		}
 		line.SetSeriesOptions(
 			charts.WithMarkPointNameCoordItemOpts(opts.MarkPointNameCoordItem{
-				Name: markPointValues[i].GraphLabel + " T: " + markPointValues[i].XCoordinate, // lable when hovering over markpoint
+				Name: markPointValues[i].GraphLabel + " T: " + shortDate, // lable when hovering over markpoint
 				Coordinate: []interface{}{markPointValues[i].XCoordinate, markPointValues[i].YCoordinate}, // coordinates of mark; string, int
 				Value: gainLoss, // value displayed on top of markpoint
 				Label: &opts.Label{
