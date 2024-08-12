@@ -255,7 +255,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
     }
 
     // add your own file path here
-	jsonFile, err := ioutil.ReadFile("./../Trading-1/TestingTradingData.json")
+	jsonFile, err := ioutil.ReadFile("./../Trading-main/TestingTradingData.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
         // return nil, err
@@ -351,11 +351,11 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 			fmt.Println("reading label newday")
 			markPointSymbol = "diamond"
 			markPointColor = "orange"
-			gainLoss = "Gain/Loss: " + markPointValues[i].Profit
+			gainLoss = "G/L: " + markPointValues[i].Profit
 			// fmt.Println("Reading from JSON FILE, getting price: ", markPointValues[i].YCoordinate)
 		}
 		if markPointValues[i].MarkLabel == "sell" {
-			gainLoss = "Gain/Loss: " + markPointValues[i].Profit
+			gainLoss = "G/L: " + markPointValues[i].Profit
 			markPointSymbol = "circle"
 			// fmt.Println("CHECKING SELL MARKER")
 			if len(markPointValues[i].Profit) > 0 && markPointValues[i].Profit[0] == byte('-') {
@@ -367,7 +367,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		}
 		line.SetSeriesOptions(
 			charts.WithMarkPointNameCoordItemOpts(opts.MarkPointNameCoordItem{
-				Name: markPointValues[i].GraphLabel, // lable when hovering over markpoint
+				Name: markPointValues[i].GraphLabel + " T: " + markPointValues[i].XCoordinate, // lable when hovering over markpoint
 				Coordinate: []interface{}{markPointValues[i].XCoordinate, markPointValues[i].YCoordinate}, // coordinates of mark; string, int
 				Value: gainLoss, // value displayed on top of markpoint
 				Label: &opts.Label{
@@ -444,7 +444,7 @@ func lineChartUnscaled(arrayTime []string, arrayClose []float32, arrayRSI []floa
     }
     // Open and read the file
     // add your own file path here
-	jsonFile, err := ioutil.ReadFile("./../Trading-1/TestingTradingData.json")
+	jsonFile, err := ioutil.ReadFile("./../Trading-main/TestingTradingData.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
         // return nil, err
@@ -565,7 +565,7 @@ func getRSIdata() ([]float32) {
     // Open and read the file
 
 	// add your own file path here
-	jsonRSIFile, err := ioutil.ReadFile("./../Trading-1/RecordingRSI.json")
+	jsonRSIFile, err := ioutil.ReadFile("./../Trading-main/RecordingRSI.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
         // return nil, err
@@ -608,7 +608,7 @@ func getTradingdata() ([]string, []float32) {
     // Open and read the file
 
 	// add your own file path here
-	jsonGraphingFile, err := ioutil.ReadFile("./../Trading-1/TestingGraphingData.json")
+	jsonGraphingFile, err := ioutil.ReadFile("./../Trading-main/TestingGraphingData.json")
     if err != nil {
         fmt.Println("Error reading JSON file:", err)
         // return nil, err
