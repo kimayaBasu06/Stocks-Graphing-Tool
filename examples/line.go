@@ -252,7 +252,7 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
         GraphLabel string `json:"marker"`
         XCoordinate  string    `json:"time"`
         YCoordinate float32 `json:"price"`
-        Profit string `json:"gain"`
+        Profit float32 `json:"gain"`
     }
 
     // add your own file path here
@@ -339,34 +339,48 @@ func lineChartScaled(arrayTime []string, arrayClose []float32, arrayRSI []float3
 		},
 		//GridIndex: 1, // y index 1 // not required
 	})
-	gainLoss := markPointValues[0].Profit
+	var gainLoss string
 	shortDate := "T"
+	var avgGL float32
+	var countDays float32
+	// var newProfitArray []string
+	for i := 0; i < len(markPointValues); i++ {
+		if markPointValues[i].MarkLabel == "newDay" {
+			avgGL = avgGL + markPointValues[i].Profit
+			countDays = countDays+1
+			// fmt.Println("This is the G/L:  ", markPointValues[i].Profit)
+		}
+	}
+	avgGL = (avgGL) / countDays
 	for i := 0; i < len(markPointValues); i++ {
 		// fmt.Println("Getting the Profit: ", markPointValues[i].Profit)
 		shortDate =  strings.Split(markPointValues[i].XCoordinate, "T")[1][:5]
 		if markPointValues[i].MarkLabel == "buy" {
 			markPointSymbol = "triangle"
 			markPointColor = "black"
-			gainLoss = markPointValues[i].Profit
+			gainLoss = ""
 			// fmt.Println("Reading from JSON FILE, getting price: ", markPointValues[i].YCoordinate)
 		}
 		if markPointValues[i].MarkLabel == "newDay" {
-			fmt.Println("reading label newday")
 			markPointSymbol = "diamond"
 			markPointColor = "orange"
-			gainLoss = "G/L: " + markPointValues[i].Profit
-			// fmt.Println("Reading from JSON FILE, getting price: ", markPointValues[i].YCoordinate)
+			gainLoss = "Day G/L: " + fmt.Sprintf("%0.2f", markPointValues[i].Profit)
+			// fmt.Println("This is the G/L after string conversion:  ",  gainLoss)
+			if i == len(markPointValues)-1 {
+	            markPointSymbol = "arrow"
+				markPointColor = "purple"
+				gainLoss = "Day G/L: " + fmt.Sprintf("%0.2f", markPointValues[i].Profit)  + " AVG G/L: " + fmt.Sprintf("%0.2f", avgGL)
+	        }
 		}
 		if markPointValues[i].MarkLabel == "sell" {
-			gainLoss = "G/L: " + markPointValues[i].Profit
+			gainLoss = "G/L: " + fmt.Sprintf("%0.2f", markPointValues[i].Profit)
 			markPointSymbol = "circle"
 			// fmt.Println("CHECKING SELL MARKER")
-			if len(markPointValues[i].Profit) > 0 && markPointValues[i].Profit[0] == byte('-') {
-	        markPointColor = "red"
+			markPointColor = "green"
+			if markPointValues[i].Profit < 0 {
+	        	markPointColor = "red"
 		    }
-		    if len(markPointValues[i].Profit) > 0 && markPointValues[i].Profit[0] != byte('-') {
-		        markPointColor = "green"
-		    }
+		    
 		}
 		line.SetSeriesOptions(
 			charts.WithMarkPointNameCoordItemOpts(opts.MarkPointNameCoordItem{
