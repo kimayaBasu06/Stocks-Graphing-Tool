@@ -546,11 +546,10 @@ type LineExamples struct{}
 
 func (LineExamples) Examples() {
 	var dataRSI []float32
-	dataRSI = getRSIdata()
-
 	var dataPoints []float32
 	var dataTime []string
-	dataTime, dataPoints = getTradingdata()
+	
+	dataTime, dataPoints, dataRSI = getTradingdata()
 
 	page := components.NewPage()
 	page.AddCharts(
@@ -575,48 +574,12 @@ func (LineExamples) Examples() {
 	page.Render(io.MultiWriter(f))
 }
 
-func getRSIdata() ([]float32) {
-	type ReadRSIData struct {
-        RSI float32 `json:"rsi"`
-    }
-    // Open and read the file
 
-	// add your own file path here
-	jsonRSIFile, err := ioutil.ReadFile("./../Trading-main/RecordingRSI.json")
-    if err != nil {
-        fmt.Println("Error reading JSON file:", err)
-        // return nil, err
-    }
-
-    // fmt.Println("Getting data values from 'jsonGraphingFile':", jsonGraphingFile)
-    var rsiValues []ReadRSIData
-    err = json.Unmarshal(jsonRSIFile, &rsiValues)
-    if err != nil {
-        fmt.Println("Error parsing JSON:", err)
-        // return nil, err
-    }
-    
-
-	fmt.Println("TESTING RSI DATA, getting time json: ", rsiValues[0].RSI)
-
-	lenRSI := len(rsiValues)
-	fmt.Println("LENGTH OF RSI VALUES: ", lenRSI)
-
-	rsiData := make([]float32, lenRSI)
-    for i := 0; i < lenRSI; i++ {
-    	rsiData[i] = rsiValues[i].RSI
-    }
-
-    fmt.Println("TESTING RSI DATA, getting time array: ", rsiData[0])
-
-    return rsiData
-
-}
-
-func getTradingdata() ([]string, []float32) {
+func getTradingdata() ([]string, []float32, []float32) {
 	
 	type ReadGraphingData struct {
         TimeStamp string `json:"time"`
+        RSI float32 `json:"rsi"`
         Open  float32    `json:"open"`
         High float32 `json:"high"`
         Low float32 `json:"low"`
@@ -647,18 +610,15 @@ func getTradingdata() ([]string, []float32) {
     numRows := len(graphingValues)
     const numCols = 4
     dataPoints := make([]float32, numRows)
+    dataTime := make([]string, numRows)
+    rsiData := make([]float32, numRows)
 
     // assigns data values to the array (formats the data)
     for i := 0; i < numRows; i++ {
     	dataPoints[i] = graphingValues[i].Close
-    }
-
-    // creates an array to hold the date (x-axis / time)
-    dataTime := make([]string, numRows)
-    for i := 0; i < numRows; i++ {
+    	rsiData[i] = graphingValues[i].RSI
     	dataTime[i] = graphingValues[i].TimeStamp
-    }
-    
+    }    
 
-    return dataTime, dataPoints  
+    return dataTime, dataPoints, rsiData  
 }
